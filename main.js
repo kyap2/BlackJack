@@ -116,6 +116,9 @@ function hit() {
             message = "You Lose!";
         }
 
+        document.getElementById("dealer-sum").innerText = dealerSum;
+        document.getElementById("your-sum").innerText = yourSum;
+
         document.getElementById("results").innerText = message;
         
     }
