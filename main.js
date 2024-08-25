@@ -13,6 +13,15 @@ window.onload = function() { //.onload is an event handler that ensures the page
     buildDeck(); //Calling funcitons 
     shuffleDeck();
     startGame();
+
+//Makes sound effect when button "Hit" is clicked
+    document.getElementById("hit").addEventListener("click", function() {
+        document.getElementById("hitsound").play();
+    });
+
+    document.getElementById("stay").addEventListener("click", function() {
+        document.getElementById("hitsound").play();
+    });
 }
 
 //Setting up cards, arrays, buidling decks and shuffling them to be random using the buildDeck() function
@@ -65,7 +74,7 @@ function startGame() { //function to start the game
         let cardImg = document.createElement("img");
         let card = deck.pop();
         cardImg.src = "./cards/" + card + ".png";
-        dealerSum += getValue(card);
+        yourSum += getValue(card);
         yourAceCount += checkAce(card);
         document.getElementById("your-cards").append(cardImg);
     }
@@ -79,24 +88,25 @@ function hit() {
     if (!canHit) {
         return;
     }
-
     let cardImg = document.createElement("img");
     let card = deck.pop();
     cardImg.src = "./cards/" + card + ".png";
-    dealerSum += getValue(card);
+    yourSum += getValue(card);
     yourAceCount += checkAce(card);
     document.getElementById("your-cards").append(cardImg);
 
     if(reduceAce(yourSum, yourAceCount) > 21) { //A, J, K -> 11 + 10 + 10
         canHit = false;
     }
+
+}
     //Stay button
     function stay() {
         dealerSum = reduceAce(dealerSum, dealerAceCount);
         yourSum = reduceAce(yourSum, yourAceCount);
 
         canHit = false; //Does not let let use Hit after staying
-        document.getElementbyId("hidden").src = "./cards/" + hidden + ".png"; //Reveals hidden card
+        document.getElementById("hidden").src = "./cards/" + hidden + ".png"; //Reveals hidden card
         
         //Win condition
         let message = "" //Message variable, which is empty
@@ -116,14 +126,12 @@ function hit() {
             message = "You Lose!";
         }
 
+        //Displays the Score
         document.getElementById("dealer-sum").innerText = dealerSum;
         document.getElementById("your-sum").innerText = yourSum;
-
+    
         document.getElementById("results").innerText = message;
-        
     }
-}
-
 //Determing the point value of the cards; kinda like score
 function getValue(card)  { //parameter =(card)
     let data = card.split("-"); //"4-C" -> ["4". "C"] Splits value in 2 parts

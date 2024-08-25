@@ -19,10 +19,27 @@ body {
     width: 100px;
     height: 50px;
     font-size: 20px;
+    border-width: 5px;
+    border-radius: 30px;
+    border-color: green;
 }
 
 #stay {
     width: 100px;
     height: 50px;
     font-size: 20px;
+    border-radius: 50px;
+    border-width: 5px;
+    border-color: green;
+}
+
+#replay {
+    width: 100px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 30px;
+    border-radius: 50px;
+    border-width: 5px;
+    border-color: green;
+    
 }
