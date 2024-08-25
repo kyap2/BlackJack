@@ -1,5 +1,5 @@
 var dealerSum = 0; //Total point value for point players
-var youSum = 0;
+var yourSum = 0;
 
 var dealerAceCount = 0; //Keeps track of how many Aces both the dealer and I have
 var yourAceCount = 0;
@@ -45,18 +45,111 @@ function shuffleDeck() { //function to shuffle through deck, rather than having 
 function startGame() { //function to start the game
     hidden = deck.pop() //removes card at the end of the array
     dealerSum += getValue(hidden); //pass the value to hidden
+    dealerAceCount += checkAce(hidden);
+    // console.log(hidden);
+    // console.log(dealerSum);
+
+    while (dealerSum < 17) {
+        let cardImg = document.createElement("img");
+        let card = deck.pop();
+        cardImg.src = "./cards/" + card + ".png";
+        dealerSum += getValue(card);
+        dealerAceCount += checkAce(card);
+        document.getElementById("dealer-cards").append(cardImg);
+    }
+
+    console.log(dealerSum);
+
+    //Players cards 
+    for (let i = 0; i < 2; i++) {
+        let cardImg = document.createElement("img");
+        let card = deck.pop();
+        cardImg.src = "./cards/" + card + ".png";
+        dealerSum += getValue(card);
+        yourAceCount += checkAce(card);
+        document.getElementById("your-cards").append(cardImg);
+    }
+    console.log(yourSum);
+    document.getElementById("hit").addEventListener("click", hit);
+    document.getElementById("stay").addEventListener("click", stay);
 }
 
-//Determing the value of the cards
-function getValue(card) {
+//Allow player to hit
+function hit() {
+    if (!canHit) {
+        return;
+    }
+
+    let cardImg = document.createElement("img");
+    let card = deck.pop();
+    cardImg.src = "./cards/" + card + ".png";
+    dealerSum += getValue(card);
+    yourAceCount += checkAce(card);
+    document.getElementById("your-cards").append(cardImg);
+
+    if(reduceAce(yourSum, yourAceCount) > 21) { //A, J, K -> 11 + 10 + 10
+        canHit = false;
+    }
+    //Stay button
+    function stay() {
+        dealerSum = reduceAce(dealerSum, dealerAceCount);
+        yourSum = reduceAce(yourSum, yourAceCount);
+
+        canHit = false; //Does not let let use Hit after staying
+        document.getElementbyId("hidden").src = "./cards/" + hidden + ".png"; //Reveals hidden card
+        
+        //Win condition
+        let message = "" //Message variable, which is empty
+        if (yourSum > 21) { //If your cards are less than 21
+            message = "You Lose!";
+        }
+        else if (dealerSum > 21) { //If dealer cards is less than 21
+            message = "You win!";
+        }
+        else if (yourSum == dealerSum) { //If your cards are equal to dealer cards
+            message = "Tie!";
+        }
+        else if (yourSum > dealerSum) { //if your cards are greater than dealer
+            message = "You Win!";
+        }
+        else if (yourSum < dealerSum) { //If your are cards lower than dealer cards
+            message = "You Lose!";
+        }
+
+        document.getElementById("results").innerText = message;
+        
+    }
+}
+
+//Determing the point value of the cards; kinda like score
+function getValue(card)  { //parameter =(card)
     let data = card.split("-"); //"4-C" -> ["4". "C"] Splits value in 2 parts
     let value = data[0];
 
-    if (isNaN(value)) { //A J Q K values 
-        if(value == "A") {
+    //if statement that checks if the value of the card is Not A Number = NaN
+    if (isNaN(value)) { //A J Q K values and Nan = Not a Number(with a parameter of value)
+        if(value == "A") { //Checks if it is an Ace, returns 11
             return 11;
         }
-        return 10;
+        return 10; //If it is not an Ace, then it returns 10, bc of value for J, Q, K
     }
-    return parseInt(value); //if the number is not a the Letters, it will just return a number
+    //value goes through parseInt function to conver the "4" -> 4, from string to integer
+    return parseInt(value); //if the number is not a the Letters, it will just return a number,
+}
+
+//Checks Ace card, if it is an A
+function checkAce(card) {
+    if(card[0] == "A") {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+function reduceAce(playerSum, playerAceCount) {
+    while (playerSum > 21 && playerAceCount > 0) {
+        playerSum -= 10;
+        playerAceCount -= 1;
+    }
+    return playerSum;
 }
