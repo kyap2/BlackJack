@@ -14,6 +14,7 @@ window.onload = function() { //.onload is an event handler that ensures the page
     shuffleDeck();
     startGame();
 
+
 //Makes sound effect when button "Hit" is clicked
     document.getElementById("hit").addEventListener("click", function() {
         document.getElementById("hitsound").play();
@@ -22,8 +23,11 @@ window.onload = function() { //.onload is an event handler that ensures the page
     document.getElementById("stay").addEventListener("click", function() {
         document.getElementById("hitsound").play();
     });
-}
+    //replays the game
+    document.getElementById("replay").addEventListener("click", replayGame);
 
+
+}
 //Setting up cards, arrays, buidling decks and shuffling them to be random using the buildDeck() function
 function buildDeck() { //function for the deck of cards
     let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]; //array for card values
@@ -58,6 +62,7 @@ function startGame() { //function to start the game
     // console.log(hidden);
     // console.log(dealerSum);
 
+    //For the dealer's hand of card
     while (dealerSum < 17) {
         let cardImg = document.createElement("img");
         let card = deck.pop();
@@ -164,3 +169,26 @@ function reduceAce(playerSum, playerAceCount) {
     }
     return playerSum;
 }
+
+
+//Reset button for game
+function replayGame() {
+    dealerSum = 0; //Resets all variables to 0;
+    yourSum = 0;
+    dealerAceCount = 0;
+    yourAceCount = 0;
+    hidden = null;
+    canHit = true;
+   
+    //clear card images
+    document.getElementById("dealer-cards").innerText = "";
+    document.getElementById("your-cards").innerText = "";
+    
+    //resets message
+    document.getElementById("results").innerText = "";
+    
+
+    startGame();
+}
+//when click replay it replays the game
+
